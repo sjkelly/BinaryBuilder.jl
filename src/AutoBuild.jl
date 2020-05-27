@@ -1150,8 +1150,10 @@ function build_jll_package(src_name::String, build_version::VersionNumber, code_
                 println(io, """
                     # From the list of our dependencies, generate a tuple of all the PATH and LIBPATH lists,
                     # then append them to our own.
-                    foreach(p -> append!(PATH_list, p), ($(join(["$(getname(dep)).PATH_list" for dep in dependencies], ", ")),))
-                    foreach(p -> append!(LIBPATH_list, p), ($(join(["$(getname(dep)).LIBPATH_list" for dep in dependencies], ", ")),))
+                    for dependency in $(tuple([getname(dep) for dep in dependencies]...))
+                        append!(PATH_list, dependency.PATH_list)
+                        append!(LIBPATH_list, dependency.LIBPATH_list)
+                    end
                 """)
             end
 
